@@ -1,4 +1,3 @@
-// components/Options.js
 import React from 'react';
 
 const Options = ({ options, onSelect }) => {
