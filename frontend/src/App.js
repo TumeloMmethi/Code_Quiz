@@ -1,23 +1,42 @@
-
-// import React, { useState, useEffect } from 'react';
-// import Question from './components/Question';
-// import Options from './components/Options';
+// import React, { useEffect, useState } from 'react';
+// import './App.css';
 // import './styles/Game.css';
+// import Fireworks from './components/Fireworks';
 
 // function App() {
 //   const [selectedTopic, setSelectedTopic] = useState('');
+//   const [selectedLevel, setSelectedLevel] = useState('');
 //   const [questions, setQuestions] = useState([]);
-//   const [currentIndex, setCurrentIndex] = useState(0);
 //   const [loading, setLoading] = useState(false);
+//   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+//   const [backgroundVisible, setBackgroundVisible] = useState(true);
+//   const [showContent, setShowContent] = useState(false);
+//   const [showLevelPopup, setShowLevelPopup] = useState(false);
+
+//   useEffect(() => {
+//     const timer = setTimeout(() => {
+//       setBackgroundVisible(false);
+//       setShowContent(true);
+//     }, 1000);
+
+//     return () => clearTimeout(timer);
+//   }, []);
 
 //   const handleTopicClick = (topic) => {
 //     setSelectedTopic(topic);
+//     setShowLevelPopup(true);
+//   };
+
+//   const handleLevelSelect = (level) => {
+//     setSelectedLevel(level);
+//     setShowLevelPopup(false);
 //     setLoading(true);
-//     fetch(`http://localhost:8000/questions.php?topic=${topic}`)
+//     setCurrentQuestionIndex(0);
+
+//     fetch(`http://localhost:8000/questions.php?topic=${selectedTopic}&level=${level}`)
 //       .then((res) => res.json())
 //       .then((data) => {
 //         setQuestions(data);
-//         setCurrentIndex(0);
 //         setLoading(false);
 //       })
 //       .catch((err) => {
@@ -26,80 +45,138 @@
 //       });
 //   };
 
-//   const handleBackToTopics = () => {
-//     setSelectedTopic('');
-//     setQuestions([]);
-//     setCurrentIndex(0);
-//   };
-
 //   const handleNext = () => {
-//     if (currentIndex < questions.length - 1) {
-//       setCurrentIndex(currentIndex + 1);
+//     if (currentQuestionIndex < questions.length - 1) {
+//       setCurrentQuestionIndex(currentQuestionIndex + 1);
 //     }
 //   };
 
 //   const handlePrevious = () => {
-//     if (currentIndex > 0) {
-//       setCurrentIndex(currentIndex - 1);
+//     if (currentQuestionIndex > 0) {
+//       setCurrentQuestionIndex(currentQuestionIndex - 1);
 //     }
 //   };
 
-//   if (!selectedTopic) {
-//     return (
-//       <div style={{ textAlign: 'center', paddingTop: '50px' }}>
-//         <h2>🎯 Choose a Quiz Topic</h2>
-//         <button onClick={() => handleTopicClick('html')}>HTML</button>
-//         <button onClick={() => handleTopicClick('javascript')}>JavaScript</button>
-//         <button onClick={() => handleTopicClick('react')}>React</button>
-//         <button onClick={() => handleTopicClick('php')}>PHP</button>
-//       </div>
-//     );
-//   }
+//   const handleBackToTopics = () => {
+//     setSelectedTopic('');
+//     setSelectedLevel('');
+//     setQuestions([]);
+//     setCurrentQuestionIndex(0);
+//   };
 
-//   if (loading) return <p style={{ textAlign: 'center' }}>Loading {selectedTopic} questions...</p>;
-
-//   const currentQuestion = questions[currentIndex];
+//   const currentQuestion = questions[currentQuestionIndex];
 
 //   return (
-//     <div style={{ textAlign: 'center', paddingTop: '30px' }}>
-//       <h1>{selectedTopic.toUpperCase()} Quiz</h1>
-//       <Question text={currentQuestion.question} />
-//       <Options options={currentQuestion.options} onSelect={() => {}} />
+//     <div className="app-wrapper">
+//       <Fireworks />
 
-//       <div style={{ marginTop: '20px' }}>
-//         <button onClick={handlePrevious} disabled={currentIndex === 0}>
-//           ⬅️ Previous
-//         </button>
-//         <button onClick={handleNext} disabled={currentIndex === questions.length - 1} style={{ marginLeft: '10px' }}>
-//           Next ➡️
-//         </button>
-//       </div>
+//       {backgroundVisible && <div className="slide-black-bg" />}
 
-//       <button onClick={handleBackToTopics} style={{ marginTop: '30px', display: 'block', marginInline: 'auto' }}>
-//         🔙 Back to Topics
-//       </button>
+//       {!selectedTopic ? (
+//         <div className="main-content">
+//           {showContent && (
+//             <>
+//               <h1 className="logo-title pop-up delay-1">Code Quiz</h1>
+//               <div className="topic-container">
+//                 <h2 className="pop-up delay-2">🎯 Choose a Quiz Topic</h2>
+//                 <div className="topic-buttons">
+//                   <button onClick={() => handleTopicClick('html')}>HTML</button>
+//                   <button onClick={() => handleTopicClick('css')}>CSS</button>
+//                   <button onClick={() => handleTopicClick('javascript')}>JavaScript</button>
+//                   <button onClick={() => handleTopicClick('react')}>React</button>
+//                   <button onClick={() => handleTopicClick('php')}>PHP</button>
+//                 </div>
+//               </div>
+//             </>
+//           )}
+//         </div>
+//       ) : loading ? (
+//         <p className="loading">Loading {selectedTopic} ({selectedLevel}) questions...</p>
+//       ) : questions.length === 0 ? (
+//         <p>No questions found for this topic and level.</p>
+//       ) : (
+//         <div className="quiz-container">
+//           <h1>{selectedTopic.toUpperCase()} Quiz - {selectedLevel.toUpperCase()}</h1>
+//           <div className="question-container">
+//             <h3>{currentQuestion.question}</h3>
+//             <div className="options">
+//               {currentQuestion.options.map((opt, i) => (
+//                 <button key={i}>{opt}</button>
+//               ))}
+//             </div>
+//           </div>
+
+//           <div className="navigation-buttons">
+//             <button onClick={handlePrevious} disabled={currentQuestionIndex === 0}>
+//               Previous
+//             </button>
+//             <button
+//               onClick={handleNext}
+//               disabled={currentQuestionIndex === questions.length - 1}
+//             >
+//               Next
+//             </button>
+//           </div>
+
+//           <button className="back-to-topics" onClick={handleBackToTopics}>
+//             Back to Topics
+//           </button>
+//         </div>
+//       )}
+
+//       {/* Level selection popup */}
+//       {showLevelPopup && (
+//         <div className="level-popup-overlay">
+//           <div className="level-popup">
+//             <h2>Select Difficulty Level</h2>
+//             <div className="level-buttons">
+//               <button onClick={() => handleLevelSelect('easy')}>Easy</button>
+//               <button onClick={() => handleLevelSelect('medium')}>Medium</button>
+//               <button onClick={() => handleLevelSelect('hard')}>Hard</button>
+//             </div>
+//           </div>
+//         </div>
+//       )}
 //     </div>
 //   );
 // }
 
 // export default App;
 
-import React, { useState } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import './styles/Game.css';
 import Fireworks from './components/Fireworks';
 
 function App() {
   const [selectedTopic, setSelectedTopic] = useState('');
+  const [selectedDifficulty, setSelectedDifficulty] = useState('');
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [backgroundVisible, setBackgroundVisible] = useState(true);
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setBackgroundVisible(false);
+      setShowContent(true);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleTopicClick = (topic) => {
     setSelectedTopic(topic);
+    setSelectedDifficulty('');
+  };
+
+  const handleDifficultyClick = (difficulty) => {
+    setSelectedDifficulty(difficulty);
     setLoading(true);
     setCurrentQuestionIndex(0);
-    fetch(`http://localhost:8000/questions.php?topic=${topic}`)
+
+    fetch(`http://localhost:8000/questions.php?topic=${selectedTopic}&difficulty=${difficulty}`)
       .then((res) => res.json())
       .then((data) => {
         setQuestions(data);
@@ -125,6 +202,7 @@ function App() {
 
   const handleBackToTopics = () => {
     setSelectedTopic('');
+    setSelectedDifficulty('');
     setQuestions([]);
     setCurrentQuestionIndex(0);
   };
@@ -135,24 +213,45 @@ function App() {
     <div className="app-wrapper">
       <Fireworks />
 
+      {backgroundVisible && <div className="slide-black-bg" />}
+
       {!selectedTopic ? (
         <div className="main-content">
-          <h1 className="logo-title">Code Quiz</h1>
-          <div className="topic-container">
-            <h2>🎯 Choose a Quiz Topic</h2>
-            <button onClick={() => handleTopicClick('html')}>HTML</button>
-            <button onClick={() => handleTopicClick('javascript')}>JavaScript</button>
-            <button onClick={() => handleTopicClick('react')}>React</button>
-            <button onClick={() => handleTopicClick('php')}>PHP</button>
+          {showContent && (
+            <>
+              <h1 className="logo-title pop-up delay-1">Code Quiz</h1>
+              <div className="topic-container">
+                <h2 className="pop-up delay-2">🎯 Choose a Quiz Topic</h2>
+                <div className="topic-buttons">
+                  <button onClick={() => handleTopicClick('html')}>HTML</button>
+                  <button onClick={() => handleTopicClick('css')}>CSS</button>
+                  <button onClick={() => handleTopicClick('javascript')}>JavaScript</button>
+                  <button onClick={() => handleTopicClick('react')}>React</button>
+                  <button onClick={() => handleTopicClick('php')}>PHP</button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      ) : !selectedDifficulty ? (
+        <div className="main-content">
+          <h2>📈 Choose Difficulty Level for {selectedTopic.toUpperCase()}</h2>
+          <div className="topic-buttons">
+            <button onClick={() => handleDifficultyClick('easy')}>Easy</button>
+            <button onClick={() => handleDifficultyClick('medium')}>Medium</button>
+            <button onClick={() => handleDifficultyClick('hard')}>Hard</button>
           </div>
+          <button className="back-to-topics" onClick={handleBackToTopics}>
+            Back to Topics
+          </button>
         </div>
       ) : loading ? (
-        <p className="loading">Loading {selectedTopic} questions...</p>
+        <p className="loading">Loading {selectedTopic} ({selectedDifficulty}) questions...</p>
       ) : questions.length === 0 ? (
-        <p>No questions found for this topic.</p>
+        <p>No questions found for this topic and difficulty.</p>
       ) : (
         <div className="quiz-container">
-          <h1>{selectedTopic.toUpperCase()} Quiz</h1>
+          <h1>{selectedTopic.toUpperCase()} Quiz ({selectedDifficulty.toUpperCase()})</h1>
           <div className="question-container">
             <h3>{currentQuestion.question}</h3>
             <div className="options">

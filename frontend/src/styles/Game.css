@@ -70,11 +70,12 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(-45deg, #0a162b, #0e244b, #0f2027, #112329, #124053);
+    background: linear-gradient(-45deg, #0a162b, #030c1b, #081114, #0a161a, #061b24);
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite;
     color: #fff;
     min-height: 100vh;
+    overflow-x: hidden; /* Prevent horizontal scroll */
   }
   
   /* Animation keyframes */
@@ -106,16 +107,17 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 80vh; /* Take up most of the viewport */
+    height: 80vh; 
     flex-direction: column;
     text-align: center;
+    margin-top: -4rem; 
   }
   
   /* Style the heading */
   h2 {
-    font-size: 32px;
+    font-size: 50px;
     margin-bottom: 20px;
-    color: #555;
+    color: #fff;
   }
   
   /* Style the buttons for topic selection */
@@ -167,5 +169,46 @@ body {
     flex-direction: column;
     text-align: center;
     padding-top: 50px;
+  }
+  .level-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .level-popup {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .level-buttons button {
+    margin: 10px;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    background: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .level-buttons button:hover {
+    background: #0056b3;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
   }
   
