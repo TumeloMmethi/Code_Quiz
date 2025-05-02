@@ -176,10 +176,19 @@ function App() {
     setLoading(true);
     setCurrentQuestionIndex(0);
 
-    fetch(`http://localhost:8000/questions.php?topic=${selectedTopic}&difficulty=${difficulty}`)
-      .then((res) => res.json())
+    fetch(`http://localhost/questions.php?topic=${selectedTopic}&difficulty=${difficulty}`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
-        setQuestions(data);
+        if (Array.isArray(data) && data.length > 0) {
+          setQuestions(data);
+        } else {
+          setQuestions([]); // No questions found
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -251,32 +260,43 @@ function App() {
         <p>No questions found for this topic and difficulty.</p>
       ) : (
         <div className="quiz-container">
-          <h1>{selectedTopic.toUpperCase()} Quiz ({selectedDifficulty.toUpperCase()})</h1>
-          <div className="question-container">
-            <h3>{currentQuestion.question}</h3>
-            <div className="options">
-              {currentQuestion.options.map((opt, i) => (
-                <button key={i}>{opt}</button>
-              ))}
-            </div>
-          </div>
+  <h1>{selectedTopic.toUpperCase()} Quiz ({selectedDifficulty.toUpperCase()})</h1>
+  <div className="question-container">
+    <h3>{currentQuestion.question}</h3>
+    <div className="options">
+      {currentQuestion.options.map((opt, i) => (
+        <button key={i}>{opt}</button>
+      ))}
+    </div>
+  </div>
 
-          <div className="navigation-buttons">
-            <button onClick={handlePrevious} disabled={currentQuestionIndex === 0}>
-              Previous
-            </button>
-            <button
-              onClick={handleNext}
-              disabled={currentQuestionIndex === questions.length - 1}
-            >
-              Next
-            </button>
-          </div>
+  <div className="navigation-buttons">
+    <button onClick={handlePrevious} disabled={currentQuestionIndex === 0}>
+      Previous
+    </button>
+    <button
+      onClick={handleNext}
+      disabled={currentQuestionIndex === questions.length - 1}
+    >
+      Next
+    </button>
+  </div>
 
-          <button className="back-to-topics" onClick={handleBackToTopics}>
-            Back to Topics
-          </button>
-        </div>
+  <div className="navigation-buttons">
+    <button className="back-to-difficulty" onClick={() => {
+      setSelectedDifficulty('');
+      setQuestions([]);
+      setCurrentQuestionIndex(0);
+    }}>
+      Choose Difficulty Level
+    </button>
+
+    {/* <button className="back-to-topics" onClick={handleBackToTopics}>
+      Choose Topics
+    </button> */}
+  </div>
+</div>
+
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-// === src/components/Question.js ===
+
 import React from 'react';
 
 // The Question component displays the current question to the user

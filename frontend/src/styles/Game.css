@@ -122,7 +122,7 @@ body {
   
   /* Style the buttons for topic selection */
   button {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.103);
     color: #fff;
     border: 1px solid #fff;
     padding: 10px 20px;
