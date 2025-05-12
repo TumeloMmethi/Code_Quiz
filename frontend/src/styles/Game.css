@@ -212,3 +212,53 @@ body {
     to { opacity: 1; transform: scale(1); }
   }
   
+  .options button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    /* background-color: white; */
+    cursor: pointer;
+  }
+  
+  .options button.selected {
+    border-color: #007bff;
+    background-color: #e7f1ff;
+  }
+  
+  .options button.correct {
+    background-color: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+  }
+  
+  .options button.wrong {
+    background-color: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
+  }
+  
+  .timer {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #f04e4e;
+  }
+  
+  .final-score {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+    color: #28a745;
+  }
+  
+  .final-score h2 {
+    margin-bottom: 10px;
+  }
+  
+  .final-score p {
+    font-size: 18px;
+  }
+  

@@ -12,7 +12,7 @@ header("Content-Type: application/json");
 $host = 'localhost';
 $dbname = 'quiz_app';
 $username = 'root';
-$password = ''; // Replace with your DB password if needed
+$password = ''; 
 
 // Connect to MySQL
 $conn = new mysqli($host, $username, $password, $dbname);

@@ -11,14 +11,39 @@ function App() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [backgroundVisible, setBackgroundVisible] = useState(true);
   const [showContent, setShowContent] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [timer, setTimer] = useState(15); // Timer in seconds
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setBackgroundVisible(false);
       setShowContent(true);
-    }, 1000);
+    }, 1000); // Delay before the fireworks fade out
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!submitted && selectedTopic && selectedDifficulty && questions.length > 0) {
+      const interval = setInterval(() => {
+        setTimer((prevTime) => {
+          if (prevTime <= 1) {
+            clearInterval(interval);
+            setSubmitted(true);
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [currentQuestionIndex, submitted, questions]);
+
+  useEffect(() => {
+    if (!submitted) {
+      setTimer(15); // Reset timer on new question or after navigation
+    }
+  }, [currentQuestionIndex, submitted]);
 
   const handleTopicClick = (topic) => {
     setSelectedTopic(topic);
@@ -41,7 +66,7 @@ function App() {
         if (Array.isArray(data) && data.length > 0) {
           setQuestions(data);
         } else {
-          setQuestions([]); // No questions found
+          setQuestions([]);
         }
         setLoading(false);
       })
@@ -54,12 +79,16 @@ function App() {
   const handleNext = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setSelectedAnswer(null);
+      setSubmitted(false);
     }
   };
 
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
+      setSelectedAnswer(null);
+      setSubmitted(false);
     }
   };
 
@@ -68,9 +97,38 @@ function App() {
     setSelectedDifficulty('');
     setQuestions([]);
     setCurrentQuestionIndex(0);
+    setSelectedAnswer(null);
+    setSubmitted(false);
+  };
+
+  const handleSubmit = () => {
+    setSubmitted(true);
   };
 
   const currentQuestion = questions[currentQuestionIndex];
+
+  const getOptionClass = (option) => {
+    if (!submitted) {
+      return selectedAnswer === option ? 'selected' : '';
+    }
+
+    if (submitted) {
+      if (option === currentQuestion.answer) {
+        return 'correct';
+      } else if (option === selectedAnswer && option !== currentQuestion.answer) {
+        return 'wrong';
+      }
+    }
+
+    return '';
+  };
+
+  const getTick = (option) => {
+    if (submitted && option === currentQuestion.answer) {
+      return ' ✅';
+    }
+    return '';
+  };
 
   return (
     <div className="app-wrapper">
@@ -114,43 +172,55 @@ function App() {
         <p>No questions found for this topic and difficulty.</p>
       ) : (
         <div className="quiz-container">
-  <h1>{selectedTopic.toUpperCase()} Quiz ({selectedDifficulty.toUpperCase()})</h1>
-  <div className="question-container">
-    <h3>{currentQuestion.question}</h3>
-    <div className="options">
-      {currentQuestion.options.map((opt, i) => (
-        <button key={i}>{opt}</button>
-      ))}
-    </div>
-  </div>
+          <h1>{selectedTopic.toUpperCase()} Quiz ({selectedDifficulty.toUpperCase()})</h1>
 
-  <div className="navigation-buttons">
-    <button onClick={handlePrevious} disabled={currentQuestionIndex === 0}>
-      Previous
-    </button>
-    <button
-      onClick={handleNext}
-      disabled={currentQuestionIndex === questions.length - 1}
-    >
-      Next
-    </button>
-  </div>
+          <div className="timer">⏱️ Time Left: {timer}s</div>
 
-  <div className="navigation-buttons">
-    <button className="back-to-difficulty" onClick={() => {
-      setSelectedDifficulty('');
-      setQuestions([]);
-      setCurrentQuestionIndex(0);
-    }}>
-      Choose Difficulty Level
-    </button>
+          <div className="question-container">
+            <h3>{currentQuestion.question}</h3>
+            <div className="options">
+              {currentQuestion.options.map((opt, i) => (
+                <button
+                  key={i}
+                  onClick={() => !submitted && setSelectedAnswer(opt)}
+                  className={getOptionClass(opt)}
+                >
+                  {opt}
+                  <span>{getTick(opt)}</span>
+                </button>
+              ))}
+            </div>
+          </div>
 
-    {/* <button className="back-to-topics" onClick={handleBackToTopics}>
-      Choose Topics
-    </button> */}
-  </div>
-</div>
+          <button onClick={handleSubmit} disabled={submitted || selectedAnswer === null}>
+            Submit Answer
+          </button>
 
+          <div className="navigation-buttons">
+            <button onClick={handlePrevious} disabled={currentQuestionIndex === 0}>
+              Previous
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={currentQuestionIndex === questions.length - 1}
+            >
+              Next
+            </button>
+          </div>
+
+          <div className="navigation-buttons">
+            <button
+              className="back-to-difficulty"
+              onClick={() => {
+                setSelectedDifficulty('');
+                setQuestions([]);
+                setCurrentQuestionIndex(0);
+              }}
+            >
+              Choose Difficulty Level
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

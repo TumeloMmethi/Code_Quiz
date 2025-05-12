@@ -8,7 +8,7 @@ error_reporting(E_ALL);
 $host = 'localhost';
 $dbname = 'quiz_app';
 $username = 'root';
-$password = ''; // Change if needed
+$password = '';
 
 // Connect to DB
 $conn = new mysqli($host, $username, $password, $dbname);
