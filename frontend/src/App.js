@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import './styles/Game.css';
+import Question from './components/Question';
+import { useNavigate } from 'react-router-dom';
 import Fireworks from './components/Fireworks';
 
 function App() {
@@ -13,7 +15,12 @@ function App() {
   const [showContent, setShowContent] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [submitted, setSubmitted] = useState(false);
-  const [timer, setTimer] = useState(15); // Timer in seconds
+  const [timer, setTimer] = useState(15);
+  const navigate = useNavigate();
+  const [score, setScore] = useState(0);
+  const totalQuestions = questions.length;
+  const [isFinished, setIsFinished] = useState(false);
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -200,13 +207,34 @@ function App() {
             <button onClick={handlePrevious} disabled={currentQuestionIndex === 0}>
               Previous
             </button>
-            <button
-              onClick={handleNext}
-              disabled={currentQuestionIndex === questions.length - 1}
-            >
-              Next
-            </button>
+
+            {currentQuestionIndex < questions.length - 1 ? (
+              <button
+                onClick={handleNext}
+                disabled={!submitted}
+              >
+                Next
+              </button>
+            ) : (
+              submitted && (
+                <button
+                  className="finish-button"
+                  onClick={() =>
+                    navigate('/ScoreBoard', {
+                      state: {
+                        score: score,
+                        total: questions.length,
+                      },
+                    })
+                  }
+                >
+                  Finish Quiz
+                </button>
+
+              )
+            )}
           </div>
+
 
           <div className="navigation-buttons">
             <button
@@ -227,3 +255,4 @@ function App() {
 }
 
 export default App;
+

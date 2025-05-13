@@ -53,6 +53,7 @@ while ($row = $result->fetch_assoc()) {
     ];
 }
 
+
 // Output valid JSON
 echo json_encode($questions);
 

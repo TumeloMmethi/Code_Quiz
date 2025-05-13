@@ -224,7 +224,7 @@ body {
   
   .options button.selected {
     border-color: #007bff;
-    background-color: #e7f1ff;
+    background-color: #e7f1ff77;
   }
   
   .options button.correct {
@@ -246,19 +246,18 @@ body {
     color: #f04e4e;
   }
   
-  .final-score {
-    font-size: 24px;
+  .finish-button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
     font-weight: bold;
-    text-align: center;
-    margin-top: 20px;
-    color: #28a745;
+    margin-left: 10px;
+    cursor: pointer;
   }
   
-  .final-score h2 {
-    margin-bottom: 10px;
-  }
-  
-  .final-score p {
-    font-size: 18px;
+  .finish-button:hover {
+    background-color: #218838;
   }
   
